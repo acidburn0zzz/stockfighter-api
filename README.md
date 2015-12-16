@@ -34,38 +34,38 @@ defaults are all optional. account/venue/stock passed as args or in POST body ov
 api
 ---
 
-### client.heartbeat.api()
-    GET /heartbeat
+*client.heartbeat.api()*
+GET /heartbeat
 
-### client.heartbeat.venue(?venue)
-    GET /venues/:venue/heartbeat
+*client.heartbeat.venue(?venue)*
+GET /venues/:venue/heartbeat
 
-### client.stock.list(?venue)
-    GET /venues/:venue/stocks
+*client.stock.list(?venue)*
+GET /venues/:venue/stocks
 
-### client.stock.book(?stock, ?venue)
-    GET /venues/:venue/stocks/:stock
+*client.stock.book(?stock, ?venue)*
+GET /venues/:venue/stocks/:stock
 
-### client.stock.quote(?stock, ?venue)
-    GET /venues/:venue/stocks/:stock/quote
+*client.stock.quote(?stock, ?venue)*
+GET /venues/:venue/stocks/:stock/quote
 
-### client.stock.orders(?stock, ?venue, ?account)
-    GET /venues/:venue/accounts/:account/stocks/:stock/orders
+*client.stock.orders(?stock, ?venue, ?account)*
+GET /venues/:venue/accounts/:account/stocks/:stock/orders
 
-### client.order.list(?venue, ?account)
-    GET /venues/:venue/accounts/:account/orders
+*client.order.list(?venue, ?account)*
+GET /venues/:venue/accounts/:account/orders
 
-### client.order.bid(body)
-    POST /venues/:venue/stocks/:stock/orders
+*client.order.bid(body)*
+POST /venues/:venue/stocks/:stock/orders
 
-### client.order.ask(body)
-    POST /venues/:venue/stocks/:stock/orders
+*client.order.ask(body)*
+POST /venues/:venue/stocks/:stock/orders
 
-### client.order.status(id, ?stock, ?venue)
-    GET /venues/:venue/stocks/:stock/orders/:id
+*client.order.status(id, ?stock, ?venue)*
+GET /venues/:venue/stocks/:stock/orders/:id
 
-### client.order.cancel(id, ?stock, ?venue)
-    DELETE /venues/:venue/stocks/:stock/orders/:order
+*client.order.cancel(id, ?stock, ?venue)*
+DELETE /venues/:venue/stocks/:stock/orders/:order
 
 style notes
 ---
