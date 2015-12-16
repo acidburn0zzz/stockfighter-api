@@ -35,37 +35,37 @@ api
 ---
 
 ### client.heartbeat.api()
-   *GET* _/heartbeat_
+    GET /heartbeat
 
 ### client.heartbeat.venue(?venue)
-    *GET* _/venues/:venue/heartbeat_
+    GET /venues/:venue/heartbeat
 
 ### client.stock.list(?venue)
-    *GET* _/venues/:venue/stocks_
+    GET /venues/:venue/stocks
 
 ### client.stock.book(?stock, ?venue)
-    *GET* _/venues/:venue/stocks/:stock_
+    GET /venues/:venue/stocks/:stock
 
 ### client.stock.quote(?stock, ?venue)
-    *GET* _/venues/:venue/stocks/:stock/quote_
+    GET /venues/:venue/stocks/:stock/quote
 
 ### client.stock.orders(?stock, ?venue, ?account)
-    *GET* _/venues/:venue/accounts/:account/stocks/:stock/orders_
+    GET /venues/:venue/accounts/:account/stocks/:stock/orders
 
 ### client.order.list(?venue, ?account)
-    *GET* _/venues/:venue/accounts/:account/orders_
+    GET /venues/:venue/accounts/:account/orders
 
 ### client.order.bid(body)
-    *POST* _/venues/:venue/stocks/:stock/orders_
+    POST /venues/:venue/stocks/:stock/orders
 
 ### client.order.ask(body)
-    *POST* _/venues/:venue/stocks/:stock/orders_
+    POST /venues/:venue/stocks/:stock/orders
 
 ### client.order.status(id, ?stock, ?venue)
-    *GET* _/venues/:venue/stocks/:stock/orders/:id_
+    GET /venues/:venue/stocks/:stock/orders/:id
 
 ### client.order.cancel(id, ?stock, ?venue)
-    *DELETE* _/venues/:venue/stocks/:stock/orders/:order_
+    DELETE /venues/:venue/stocks/:stock/orders/:order
 
 style notes
 ---
