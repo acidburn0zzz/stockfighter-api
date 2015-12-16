@@ -11,7 +11,7 @@
     GET	    venues/:venue/heartbeat                                 (heartbeat.venue)
     GET	    venues/:venue/stocks                                    (stock.list)
     GET	    venues/:venue/stocks/:stock                             (stock.book)
-    POST    venues/:venue/stocks/:stock/orders                      (stock.bid / stock.ask)
+    POST    venues/:venue/stocks/:stock/orders                      (order.bid / order.ask)
     GET     venues/:venue/stocks/:stock/quote                       (stock.quote)
     GET     venues/:venue/stocks/:stock/orders/:id                  (order.status)
     DELETE  venues/:venue/stocks/:stock/orders/:order               (order.cancel)
