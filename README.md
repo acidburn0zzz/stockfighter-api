@@ -7,6 +7,8 @@ usage
 ---
 
 ```javascript
+"use strict";
+
 const stockfighter = require("stockfighter-api");
 const apiKey = process.env.STOCKFIGHTER_API_KEY;
 
