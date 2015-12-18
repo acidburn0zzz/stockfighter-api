@@ -46,7 +46,7 @@ const wat = data =>
     console.log("\n", JSON.stringify(data, null, "\t"));
 const shh = (data, keys) => {
     for(let key of keys) {
-        data[key] = data[key].slice(0,3);
+        data[key] = data[key].slice(0,2);
     }
 
     return data;
@@ -96,6 +96,7 @@ describe("REST api", () => {
 
     it("client.order.list", () =>
         client.order.list()
+            .then(data => shh(data, ["orders"]))
             .tap(wat)
             .then(yay)
             .catch(boo));

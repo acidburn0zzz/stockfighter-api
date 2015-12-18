@@ -28,24 +28,22 @@
 "use strict";
 
 const Promise = require("bluebird");
-const request = require("request").defaults({
-    baseUrl: "https://api.stockfighter.io/ob/api/",
-    headers: { Accept: "application/json" },
-    json: true
-});
 
-//this feels a bit silly
-//TODO replace with a function or build objects in promise or something
-let headers = {
-    post: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "X-Starfighter-Authorization": null
-    },
-    auth: {
-        Accept: "application/json",
-        "X-Starfighter-Authorization": null
-    }
+const apiBase = "https://api.stockfighter.io/ob/api/";
+const gmBase = "https://www.stockfighter.io/gm/";
+
+let api = {
+    get: require("request").defaults({
+        baseUrl: apiBase,
+        headers: { Accept: "application/json" },
+        json: true
+    }).get,
+    //these are filled in upon instantiation
+    //not ideal but better than throwing header objects around
+    auth: null,
+    post: null,
+    del: null,
+    gm: null
 };
 
 const callback = (err, res, body, Y, N) => {
@@ -60,8 +58,43 @@ const callback = (err, res, body, Y, N) => {
 //optional defaults are: account, venue, stock
 //apiKey is kinda optional if you don't try to hit those endpoints
 let obj = (apiKey, defaults) => {
-    headers.post["X-Starfighter-Authorization"] = apiKey;
-    headers.auth["X-Starfighter-Authorization"] = apiKey;
+
+    api.auth = require("request").defaults({
+        baseUrl: apiBase,
+        headers: {
+            Accept: "application/json",
+            "X-Starfighter-Authorization": apiKey
+        },
+        json: true
+    }).get;
+
+    api.post = require("request").defaults({
+        baseUrl: apiBase,
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Starfighter-Authorization": apiKey
+        },
+        json: true
+    }).post;
+
+    api.del = require("request").defaults({
+        baseUrl: apiBase,
+        headers: {
+            Accept: "application/json",
+            "X-Starfighter-Authorization": apiKey
+        },
+        json: true
+    }).del;
+
+    api.gm = require("request").defaults({
+        baseUrl: gmBase,
+        headers: {
+            Accept: "application/json",
+            Cookie: `api_key=${apiKey}`
+        },
+        json: true
+    });
 
     const bidOrAsk = (body, dir) => {
         return new Promise((Y,N) => {
@@ -89,9 +122,8 @@ let obj = (apiKey, defaults) => {
                 return;
             }
 
-            request.post({
+            api.post({
                 uri: `/venues/${tb.venue}/stocks/${tb.stock}/orders`,
-                headers: headers.post,
                 body: tb
             }, (err, res, body) =>
                 callback(err, res, body, Y, N));
@@ -101,7 +133,7 @@ let obj = (apiKey, defaults) => {
     return {
         heartbeat: {
             api: () => new Promise((Y,N) => {
-                request.get("/heartbeat", (err, res, body) =>
+                api.get("/heartbeat", (err, res, body) =>
                     callback(err, res, body, Y, N))
             }),
             venue: venue => new Promise((Y,N) => {
@@ -112,7 +144,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get(`/venues/${venue}/heartbeat`, (err, res, body) =>
+                api.get(`/venues/${venue}/heartbeat`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
         },
@@ -125,7 +157,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get(`/venues/${venue}/stocks`, (err, res, body) =>
+                api.get(`/venues/${venue}/stocks`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
             book: (stock, venue) => new Promise((Y,N) => {
@@ -140,7 +172,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get(`/venues/${venue}/stocks/${stock}`, (err, res, body) =>
+                api.get(`/venues/${venue}/stocks/${stock}`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
             quote: (stock, venue) => new Promise((Y,N) => {
@@ -155,7 +187,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get(`/venues/${venue}/stocks/${stock}/quote`, (err, res, body) =>
+                api.get(`/venues/${venue}/stocks/${stock}/quote`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
             orders: (stock, venue, account) => new Promise((Y,N) => {
@@ -174,10 +206,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get({
-                    uri: `/venues/${venue}/accounts/${account}/stocks/${stock}/orders`,
-                    headers: headers.auth
-                }, (err, res, body) =>
+                api.auth(`/venues/${venue}/accounts/${account}/stocks/${stock}/orders`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
         },
@@ -194,10 +223,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get({
-                    uri: `/venues/${venue}/accounts/${account}/orders`,
-                    headers: headers.auth
-                }, (err, res, body) =>
+                api.auth(`/venues/${venue}/accounts/${account}/orders`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
             bid: body => {
@@ -221,10 +247,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.get({
-                    uri: `/venues/${venue}/stocks/${stock}/orders/${id}`,
-                    headers: headers.auth
-                }, (err, res, body) =>
+                api.auth(`/venues/${venue}/stocks/${stock}/orders/${id}`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
             cancel: (id, stock, venue) => new Promise((Y,N) => {
@@ -242,10 +265,7 @@ let obj = (apiKey, defaults) => {
                     return;
                 }
 
-                request.del({
-                    uri: `/venues/${venue}/stocks/${stock}/orders/${id}`,
-                    headers: headers.auth
-                }, (err, res, body) =>
+                api.del(`/venues/${venue}/stocks/${stock}/orders/${id}`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
         },

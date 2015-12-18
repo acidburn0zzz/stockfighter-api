@@ -3,8 +3,12 @@ stockfighter-api
 
 REST client. websockets maybe later, maybe as its own separate thing. will decide based on what I need ingame. overall design dictated by my personal needs/whims, fair warning.
 
+[npm](https://www.npmjs.com/package/stockfighter-api)
+
 usage
 ---
+
+`npm install stockfighter-api`
 
 ```javascript
 "use strict";
