@@ -6,6 +6,7 @@ REST client. websockets maybe later, maybe as its own separate thing. will decid
 [npm](https://www.npmjs.com/package/stockfighter-api)
 
 [api](https://starfighter.readme.io/docs/heartbeat)
+
 [gm api](https://discuss.starfighters.io/t/the-gm-api-how-to-start-stop-restart-resume-trading-levels-automagically)
 
 usage
