@@ -282,7 +282,7 @@ let obj = (apiKey, defaults) => {
             //TODO fill out the array lol
             start: level => new Promise((Y,N) => {
                 if(typeof level == "number") {
-                    if(level >= levels.length) {
+                    if(level >= levels.length || level < 0) {
                         N({type: "client", body: "invalid level number "
                             + "(maybe my fault, I don't have them all yet)"});
                         return;
