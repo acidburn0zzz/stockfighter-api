@@ -1,9 +1,7 @@
-stockfighter-api
+[stockfighter-api](https://www.npmjs.com/package/stockfighter-api)
 ---
 
-REST client. websockets maybe later, maybe as its own separate thing. will decide based on what I need ingame. overall design dictated by my personal needs/whims, fair warning.
-
-[npm](https://www.npmjs.com/package/stockfighter-api)
+REST client for [stockfighter](https://www.stockfighter.io). websockets maybe later, maybe as its own separate thing. will decide based on what I need ingame. overall design dictated by my personal needs/whims, fair warning.
 
 [api](https://starfighter.readme.io/docs/heartbeat)
 
@@ -36,13 +34,16 @@ const client = stockfighter(apiKey, defaults);
 
 client.heartbeat.api()
     .then(res => console.log(res));
+    .catch(err => console.log(err));
 
 client.order.bid(body)
     .then(res => client.order.cancel(res.id));
+    .catch(err => console.log(err));
 
 client.level.start(0)
     .then(res => client.stock.quote(res.tickers[0], res.venues[0]))
     .then(res => console.log(res));
+    .catch(err => console.log(err));
 ```
 
 defaults are all optional. account/venue/stock passed as args or in POST body override defaults if set. all functions return promises that resolve to the server response or reject with an object of the form `{ type: "type", body: "friendly message" }` or `{ type: 451, body: { server: "response", as: "object" } }`.
