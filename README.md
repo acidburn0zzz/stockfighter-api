@@ -5,6 +5,9 @@ REST client. websockets maybe later, maybe as its own separate thing. will decid
 
 [npm](https://www.npmjs.com/package/stockfighter-api)
 
+[api](https://starfighter.readme.io/docs/heartbeat)
+[gm api](https://discuss.starfighters.io/t/the-gm-api-how-to-start-stop-restart-resume-trading-levels-automagically)
+
 usage
 ---
 
@@ -30,12 +33,22 @@ const defaults = {
 
 const client = stockfighter(apiKey, defaults);
 
-client.heartbeat.api().then(res => console.log(res));
+client.heartbeat.api()
+    .then(res => console.log(res));
 
-client.order.bid(body).then(res => client.order.cancel(res.id));
+client.order.bid(body)
+    .then(res => client.order.cancel(res.id));
+
+client.level.start(0)
+    .then(res => client.stock.quote(res.tickers[0], res.venues[0]))
+    .then(res => console.log(res));
 ```
 
 defaults are all optional. account/venue/stock passed as args or in POST body override defaults if set. all functions return promises that resolve to the server response or reject with an object of the form `{ type: "type", body: "friendly message" }` or `{ type: 451, body: { server: "response", as: "object" } }`.
+
+`level.start` is meant to take either a string or a number, the number corresponding to an array index, eg `level.start("first_steps")` and `level.start(0)` are equivalent. at the moment I only have the first three level names though. will update with the rest when I have them.
+
+`mocha test` is a reasonably convenient way to see what all the api responses look like. couple things truncated for brevity, but everything important is there. note this requires a `STOCKFIGHTER_API_KEY` env (it will also try `dotenv.load()`, failing gracefully if the module isn't there, but it occurs to me just now that function likely only checks the pwd). level tests will probably (haven't actually checked) kill any levels you have. `mocha test --grep foo` and `mocha test --fgrep bar` may be useful.
 
 api
 ---
@@ -72,6 +85,21 @@ GET /venues/:venue/stocks/:stock/orders/:id
 
 ### client.order.cancel(id, ?stock, ?venue)
 DELETE /venues/:venue/stocks/:stock/orders/:order
+
+### client.level.start(level)
+POST /levels/:level
+
+### client.level.resume(id)
+POST /instances/:id/resume
+
+### client.level.restart(id)
+POST /instances/:id/restart
+
+### client.level.stop(id)
+POST /instances/:id/stop
+
+### client.level.status(id)
+GET /instances/:id
 
 style notes
 ---
