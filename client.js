@@ -32,6 +32,13 @@ const Promise = require("bluebird");
 const apiBase = "https://api.stockfighter.io/ob/api/";
 const gmBase = "https://www.stockfighter.io/gm/";
 
+//TODO fill this out once I know what they are
+const levels = [
+    "first_steps",
+    "chock_a_block",
+    "sell_side"
+];
+
 let api = {
     get: require("request").defaults({
         baseUrl: apiBase,
@@ -268,6 +275,67 @@ let obj = (apiKey, defaults) => {
                 api.del(`/venues/${venue}/stocks/${stock}/orders/${id}`, (err, res, body) =>
                     callback(err, res, body, Y, N));
             }),
+        },
+        level: {
+            //start takes a "level_name" or an array index
+            //eg 0 == "first_steps"
+            //TODO fill out the array lol
+            start: level => new Promise((Y,N) => {
+                if(typeof level == "number") {
+                    if(level >= levels.length) {
+                        N({type: "client", body: "invalid level number "
+                            + "(maybe my fault, I don't have them all yet)"});
+                        return;
+                    } else {
+                        level = levels[level];
+                    }
+                }
+
+                if(!level) {
+                    N({type: "client", body: "missing level"});
+                    return;
+                }
+
+                api.gm.post(`/levels/${level}`, (err, res, body) =>
+                    callback(err, res, body, Y, N));
+            }),
+            //FIXME restart/start/resume could easily be made wrappers on one fn
+            restart: id => new Promise((Y,N) => {
+                if(!id) {
+                    N({type: "client", body: "missing id"});
+                    return;
+                } 
+
+                api.gm.post(`/instances/${id}/restart`, (err, res, body) =>
+                    callback(err, res, body, Y, N));
+            }),
+            stop: id => new Promise((Y,N) => {
+                if(!id) {
+                    N({type: "client", body: "missing id"});
+                    return;
+                } 
+
+                api.gm.post(`/instances/${id}/stop`, (err, res, body) =>
+                    callback(err, res, body, Y, N));
+            }),
+            resume: id => new Promise((Y,N) => {
+                if(!id) {
+                    N({type: "client", body: "missing id"});
+                    return;
+                } 
+
+                api.gm.post(`/instances/${id}/resume`, (err, res, body) =>
+                    callback(err, res, body, Y, N));
+            }),
+            status: id => new Promise((Y,N) => {
+                if(!id) {
+                    N({type: "client", body: "missing id"});
+                    return;
+                } 
+
+                api.gm.get(`/instances/${id}`, (err, res, body) =>
+                    callback(err, res, body, Y, N));
+            })
         },
         //TODO maybe expose request itself here? 
         //designated "oh damn I need to do this weird thing this level" space
