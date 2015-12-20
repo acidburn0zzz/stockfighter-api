@@ -65,6 +65,7 @@ const callback = (err, res, body, Y, N) => {
 //optional defaults are: account, venue, stock
 //apiKey is kinda optional if you don't try to hit those endpoints
 let obj = (apiKey, defaults) => {
+    defaults = defaults || {};
 
     api.auth = require("request").defaults({
         baseUrl: apiBase,
